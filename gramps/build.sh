@@ -7,3 +7,4 @@ mkdir -p ${BUILD_DIR}
 cp -r /bin ${BUILD_DIR}
 cp -r /usr ${BUILD_DIR}
 cp -r /lib ${BUILD_DIR}
+cp --remove-destination -R ${DIR}/bin ${BUILD_DIR}/sbin
