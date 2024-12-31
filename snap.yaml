@@ -7,14 +7,6 @@ apps:
     - network
     - network-bind
     restart-condition: always
-  consumer:
-    user: gramps
-    command: bin/service.consumer.sh
-    daemon: simple
-    plugs:
-    - network
-    - network-bind
-    restart-condition: always
   celery:
     user: gramps
     command: bin/service.celery.sh
@@ -23,22 +15,6 @@ apps:
     - network
     - network-bind
     restart-condition: always
-  celery-beat:
-    user: gramps
-    command: bin/service.celery-beat.sh
-    daemon: simple
-    plugs:
-    - network
-    - network-bind
-    restart-condition: always
-  postgresql:
-    user: gramps
-    command: bin/service.postgresql.sh
-    daemon: forking
-    plugs:
-      - network
-      - network-bind
-    restart-condition: always
   redis:
     user: gramps
     daemon: simple
@@ -46,12 +22,6 @@ apps:
     restart-condition: always
     before: [celery]
  
-  psql:
-    command: bin/psql.sh
-
-  pgdumpall:
-    command: bin/pg_dumpall.sh
-
   storage-change:
     command: bin/cli storage-change
 
