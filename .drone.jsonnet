@@ -1,6 +1,6 @@
 local name = 'gramps';
 local browser = 'chrome';
-local version = '2.11.6';
+local version = 'v24.12.1';
 local nginx = '1.24.0';
 local postgresql = "15-bullseye";
 local redis = "7.0.15";
@@ -39,25 +39,10 @@ local build(arch, test_ui, dind) = [{
                     "./redis/test.sh"
                 ]
             },
-  {
-            name: "postgresql",
-            image: "postgres:" + postgresql,
-            commands: [
-                "./postgresql/build.sh"
-            ]
-           
-        },
-        {
-            name: "postgresql test",
-            image: 'syncloud/platform-buster-' + arch + ':' + platform,
-            commands: [
-                "./postgresql/test.sh"
-            ]
-        },
 
     {
       name: 'gramps',
-      image: "ghcr.io/gramps-ngx/gramps-ngx:" + version,
+      image: "ghcr.io/gramps-project/grampsweb:" + version,
       commands: [
         './gramps/build.sh',
       ],
