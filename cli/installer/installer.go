@@ -122,7 +122,7 @@ func (i *Installer) MarkInstalled() error {
 
 func (i *Installer) Upgrade() error {
 	
-	err ;= i.StorageChange()
+	err := i.StorageChange()
 	if err != nil {
 		return err
 	}
