@@ -23,12 +23,10 @@ const (
 type Variables struct {
 	Domain      string
 	Secret      string
-	DatabaseDir string
 	DataDir     string
 	AppDir      string
 	CommonDir   string
 	Url         string
-	OIDCConfig  string
 }
 
 type Installer struct {
@@ -36,7 +34,6 @@ type Installer struct {
 	currentVersionFile string
 	configDir          string
 	platformClient     *platform.Client
-	database           *Database
 	installFile        string
 	executor           *Executor
 	logger             *zap.Logger
@@ -51,7 +48,6 @@ func New(logger *zap.Logger) *Installer {
 		currentVersionFile: path.Join(DataDir, "version"),
 		configDir:          configDir,
 		platformClient:     platform.New(),
-		database:           NewDatabase(AppDir, DataDir, configDir, App, executor, logger),
 		installFile:        path.Join(CommonDir, "installed"),
 		executor:           executor,
 		logger:             logger,
@@ -61,15 +57,6 @@ func New(logger *zap.Logger) *Installer {
 func (i *Installer) Install() error {
 
 	err := i.UpdateConfigs()
-	if err != nil {
-		return err
-	}
-
-	err = i.database.Init()
-	if err != nil {
-		return err
-	}
-	err = i.database.InitConfig()
 	if err != nil {
 		return err
 	}
@@ -121,22 +108,6 @@ func (i *Installer) Initialize() error {
 		return err
 	}
 
-	err = i.database.Execute(
-		"postgres",
-		fmt.Sprintf("ALTER USER %s WITH PASSWORD '%s'", App, App),
-	)
-	if err != nil {
-		return err
-	}
-	err = i.database.createDbIfMissing(App)
-	if err != nil {
-		return err
-	}
-	err = i.database.Execute("postgres", fmt.Sprintf("GRANT CREATE ON SCHEMA public TO %s", App))
-	if err != nil {
-		return err
-	}
-
 	err = i.MarkInstalled()
 	if err != nil {
 		return err
@@ -150,15 +121,8 @@ func (i *Installer) MarkInstalled() error {
 }
 
 func (i *Installer) Upgrade() error {
-	err := i.database.Restore()
-	if err != nil {
-		return err
-	}
-	err = i.StorageChange()
-	if err != nil {
-		return err
-	}
-	err = i.database.createDbIfMissing(App)
+	
+	err ;= i.StorageChange()
 	if err != nil {
 		return err
 	}
@@ -167,23 +131,11 @@ func (i *Installer) Upgrade() error {
 }
 
 func (i *Installer) PreRefresh() error {
-	return i.database.Backup()
+	return nil
 }
 
 func (i *Installer) PostRefresh() error {
 	err := i.UpdateConfigs()
-	if err != nil {
-		return err
-	}
-	err = i.database.Remove()
-	if err != nil {
-		return err
-	}
-	err = i.database.Init()
-	if err != nil {
-		return err
-	}
-	err = i.database.InitConfig()
 	if err != nil {
 		return err
 	}
@@ -214,14 +166,7 @@ func (i *Installer) StorageChange() error {
 	if err != nil {
 		return err
 	}
-	err = linux.CreateMissingDirs(
-		path.Join(storageDir, "data/log"),
-		path.Join(storageDir, "data/index"),
-		path.Join(storageDir, "consume"),
-		path.Join(storageDir, "media"),
-		path.Join(storageDir, "static"),
-		path.Join(storageDir, "trash"),
-	)
+	err = linux.CreateMissingDirs(	)
 	if err != nil {
 		return err
 	}
@@ -272,25 +217,14 @@ func (i *Installer) UpdateConfigs() error {
 		return err
 	}
 
-	password, err := i.platformClient.RegisterOIDCClient(App, "/accounts/oidc/authelia/login/callback/", false, "client_secret_basic")
-	if err != nil {
-		return err
-	}
-
-	oidcConfig, err := OpenIDConfig(authUrl, App, password)
-	if err != nil {
-		return err
-	}
 
 	variables := Variables{
 		Domain:      domain,
 		Secret:      secret,
-		DatabaseDir: i.database.DatabaseDir(),
 		DataDir:     DataDir,
 		AppDir:      AppDir,
 		CommonDir:   CommonDir,
 		Url:         url,
-		OIDCConfig:  oidcConfig,
 	}
 
 	err = config.Generate(
@@ -344,18 +278,4 @@ func (i *Installer) RestorePreStart() error {
 
 func (i *Installer) RestorePostStart() error {
 	return i.Configure()
-}
-
-func getOrCreateUuid(file string) (string, error) {
-	_, err := os.Stat(file)
-	if os.IsNotExist(err) {
-		secret := uuid.New().String()
-		err = os.WriteFile(file, []byte(secret), 0644)
-		return secret, err
-	}
-	content, err := os.ReadFile(file)
-	if err != nil {
-		return "", err
-	}
-	return string(content), nil
 }
