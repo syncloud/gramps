@@ -21,12 +21,12 @@ const (
 )
 
 type Variables struct {
-	Domain      string
-	Secret      string
-	DataDir     string
-	AppDir      string
-	CommonDir   string
-	Url         string
+	Domain    string
+	Secret    string
+	DataDir   string
+	AppDir    string
+	CommonDir string
+	Url       string
 }
 
 type Installer struct {
@@ -121,7 +121,7 @@ func (i *Installer) MarkInstalled() error {
 }
 
 func (i *Installer) Upgrade() error {
-	
+
 	err := i.StorageChange()
 	if err != nil {
 		return err
@@ -166,7 +166,7 @@ func (i *Installer) StorageChange() error {
 	if err != nil {
 		return err
 	}
-	err = linux.CreateMissingDirs(	)
+	err = linux.CreateMissingDirs()
 	if err != nil {
 		return err
 	}
@@ -212,19 +212,13 @@ func (i *Installer) UpdateConfigs() error {
 		return err
 	}
 
-	authUrl, err := i.platformClient.GetAppUrl("auth")
-	if err != nil {
-		return err
-	}
-
-
 	variables := Variables{
-		Domain:      domain,
-		Secret:      secret,
-		DataDir:     DataDir,
-		AppDir:      AppDir,
-		CommonDir:   CommonDir,
-		Url:         url,
+		Domain:    domain,
+		Secret:    secret,
+		DataDir:   DataDir,
+		AppDir:    AppDir,
+		CommonDir: CommonDir,
+		Url:       url,
 	}
 
 	err = config.Generate(
@@ -278,4 +272,18 @@ func (i *Installer) RestorePreStart() error {
 
 func (i *Installer) RestorePostStart() error {
 	return i.Configure()
+}
+
+func getOrCreateUuid(file string) (string, error) {
+	_, err := os.Stat(file)
+	if os.IsNotExist(err) {
+		secret := uuid.New().String()
+		err = os.WriteFile(file, []byte(secret), 0644)
+		return secret, err
+	}
+	content, err := os.ReadFile(file)
+	if err != nil {
+		return "", err
+	}
+	return string(content), nil
 }
