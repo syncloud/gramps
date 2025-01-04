@@ -5,5 +5,5 @@ LIBS=$LIBS:$(echo ${DIR}/usr/lib/*-linux-gnu*)
 LIBS=$LIBS:$(echo ${DIR}/usr/lib)
 LIBS=$LIBS:$(echo ${DIR}/usr/local/lib)
 export MAGIC=${DIR}/usr/lib/file/magic.mgc
-export GI_TYPELIB_PATH=${DIR}/usr/lib/*-linux-gnu*/girepository-*
+export GI_TYPELIB_PATH=$(echo ${DIR}/usr/lib/*-linux-gnu*/girepository-*)
 exec ${DIR}/lib/*-linux*/ld-*.so* --library-path $LIBS ${DIR}/usr/bin/python3 "$@"
