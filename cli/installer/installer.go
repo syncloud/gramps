@@ -166,7 +166,10 @@ func (i *Installer) StorageChange() error {
 	if err != nil {
 		return err
 	}
-	err = linux.CreateMissingDirs()
+	err = linux.CreateMissingDirs(
+		path.Join("/data", App, "media"),
+		path.Join("/data", App, "cache"),
+	)
 	if err != nil {
 		return err
 	}
