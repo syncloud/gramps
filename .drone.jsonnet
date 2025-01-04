@@ -2,9 +2,9 @@ local name = 'gramps';
 local browser = 'chrome';
 local version = 'v24.12.1';
 local nginx = '1.24.0';
-local postgresql = "15-bullseye";
-local redis = "7.0.15";
-local node = "18-bookworm-slim";
+local postgresql = '15-bullseye';
+local redis = '7.0.15';
+local node = '18-bookworm-slim';
 local platform = '22.02';
 local selenium = '4.21.0-20240517';
 local deployer = 'https://github.com/syncloud/store/releases/download/4/syncloud-release';
@@ -26,24 +26,24 @@ local build(arch, test_ui, dind) = [{
         'echo $DRONE_BUILD_NUMBER > version',
       ],
     },
-             {
-                name: "redis",
-                image: "redis:" + redis,
-                commands: [
-                    "./redis/build.sh"
-                ]
-            },
-             {
-                name: "redis test",
-                image: 'syncloud/platform-buster-' + arch + ':' + platform,
-                commands: [
-                    "./redis/test.sh"
-                ]
-            },
+    {
+      name: 'redis',
+      image: 'redis:' + redis,
+      commands: [
+        './redis/build.sh',
+      ],
+    },
+    {
+      name: 'redis test',
+      image: 'syncloud/platform-buster-' + arch + ':' + platform,
+      commands: [
+        './redis/test.sh',
+      ],
+    },
 
     {
       name: 'gramps',
-      image: "ghcr.io/gramps-project/grampsweb:" + version,
+      image: 'ghcr.io/gramps-project/grampsweb:' + version,
       commands: [
         './gramps/build.sh',
       ],
@@ -86,26 +86,26 @@ local build(arch, test_ui, dind) = [{
       ],
     },
   ] + (if test_ui then [
-    {
-            name: "selenium",
-            image: "selenium/standalone-" + browser + ":" + selenium,
-            detach: true,
-            environment: {
-                SE_NODE_SESSION_TIMEOUT: "999999",
-                START_XVFB: "true"
-            },
-               volumes: [{
-                name: "shm",
-                path: "/dev/shm"
-            }],
-            commands: [
-                "cat /etc/hosts",
-                "getent hosts " + name + ".buster.com | sed 's/" + name +".buster.com/auth.buster.com/g' | sudo tee -a /etc/hosts",
-                "cat /etc/hosts",
-                "/opt/bin/entry_point.sh"
-            ]
+         {
+           name: 'selenium',
+           image: 'selenium/standalone-' + browser + ':' + selenium,
+           detach: true,
+           environment: {
+             SE_NODE_SESSION_TIMEOUT: '999999',
+             START_XVFB: 'true',
+           },
+           volumes: [{
+             name: 'shm',
+             path: '/dev/shm',
+           }],
+           commands: [
+             'cat /etc/hosts',
+             'getent hosts ' + name + ".buster.com | sed 's/" + name + ".buster.com/auth.buster.com/g' | sudo tee -a /etc/hosts",
+             'cat /etc/hosts',
+             '/opt/bin/entry_point.sh',
+           ],
          },
-     {
+         {
            name: 'selenium-video',
            image: 'selenium/video:ffmpeg-6.1.1-20240517',
            detach: true,
@@ -287,4 +287,3 @@ local build(arch, test_ui, dind) = [{
 
 build('amd64', true, '20.10.21-dind') +
 build('arm64', false, '20.10.21-dind')
-

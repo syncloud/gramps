@@ -9,3 +9,4 @@ $BUILD_DIR/sbin/python ${BUILD_DIR}/usr/local/bin/celery --version
 $BUILD_DIR/sbin/tesseract --list-langs | grep eng
 $BUILD_DIR/sbin/tesseract --list-langs | tail
 $BUILD_DIR/sbin/tesseract --version
+$BUILD_DIR/sbin/python -c 'from gi.repository import GLib'
