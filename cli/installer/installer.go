@@ -22,7 +22,7 @@ const (
 
 type Variables struct {
 	Domain    string
-	Secret    string
+	SecretKey string
 	DataDir   string
 	AppDir    string
 	CommonDir string
@@ -214,7 +214,7 @@ func (i *Installer) UpdateConfigs() error {
 
 	variables := Variables{
 		Domain:    domain,
-		Secret:    secret,
+		SecretKey: secret,
 		DataDir:   DataDir,
 		AppDir:    AppDir,
 		CommonDir: CommonDir,
