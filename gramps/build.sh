@@ -5,7 +5,9 @@ cd ${DIR}
 BUILD_DIR=${DIR}/../build/snap/gramps
 mkdir -p ${BUILD_DIR}
 
-pip install python-ldap==3.4.0
+apt update
+apt install -y libldap2-dev libsasl2-dev
+python3 -m pip install --break-system-packages --no-cache-dir python-ldap==3.4.0
 
 mkdir tmp
 cd tmp
