@@ -1,6 +1,6 @@
 local name = 'gramps';
 local browser = 'chrome';
-local version = 'v24.12.1';
+local version = 'v24.12.2';
 local nginx = '1.24.0';
 local postgresql = '15-bullseye';
 local redis = '7.0.15';
