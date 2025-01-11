@@ -33,7 +33,12 @@ def test_login(selenium, device_user, device_password):
     password = selenium.find_by(By.ID, "password")
     password.send_keys(device_password)
     selenium.screenshot('login')
-    selenium.find_by(By.XPATH, "//input[@type='submit']").click()
+    selenium.driver.execute_script(
+        'return document'
+        '.querySelector("gramps-js").shadowRoot'
+        '.querySelector("grampsjs-login").shadowRoot'
+        '.querySelector("mwc-button")'
+    ).click()
+
     selenium.find_by(By.XPATH, "//h4[contains(.,'Gtamps  is running!')]")
     selenium.screenshot('main')
-
