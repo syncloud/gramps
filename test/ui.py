@@ -33,6 +33,7 @@ def test_login(selenium, device_user, device_password):
     password = selenium.find_by(By.ID, "password")
     password.send_keys(device_password)
     selenium.screenshot('login')
-    selenium.find_by(By.XPATH, "//button[@type='submit']").click()
+    selenium.find_by(By.XPATH, "//input[@type='submit']").click()
     selenium.find_by(By.XPATH, "//h4[contains(.,'Gtamps  is running!')]")
     selenium.screenshot('main')
+
