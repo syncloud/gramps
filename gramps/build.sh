@@ -13,7 +13,7 @@ mkdir tmp
 cd tmp
 wget -c --progress=dot:giga https://github.com/cyberb/gramps-web-api/archive/refs/heads/master.zip
 unzip master.zip
-cp gramps-web-api-master/gramps_webapi/__init__.py /usr/local/lib/python3.11/dist-packages/gramps_webapi/auth
+cp gramps-web-api-master/gramps_webapi/auth/__init__.py /usr/local/lib/python3.11/dist-packages/gramps_webapi/auth
 cd ..
 rm -rf tmp
 
