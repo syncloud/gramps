@@ -40,5 +40,16 @@ def test_login(selenium, device_user, device_password):
         '.querySelector("mwc-button")'
     ).click()
 
-    selenium.find_by(By.XPATH, "//h4[contains(.,'Gtamps  is running!')]")
+    elem = selenium.find_by(By.CSS_SELECTOR, "gramps-js")
+    elem = selenium.find_by(By.CSS_SELECTOR, "grampsjs-main-menu", elem)
+    elem = selenium.find_by(By.CSS_SELECTOR, "mwc-list grampsjs-list-item", elem)
+    assert elem.text == "Home Page"
+
+    # home = selenium.driver.execute_script(
+    #     'return     document'
+    #     '.querySelector("gramps-js").shadowRoot'
+    #     '.querySelector("grampsjs-main-menu").shadowRoot'
+    #     '.querySelector("mwc-list grampsjs-list-item span")'
+    # )
+
     selenium.screenshot('main')
