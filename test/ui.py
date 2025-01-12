@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from os.path import dirname, join
 from selenium.webdriver.common.by import By
@@ -40,9 +42,10 @@ def test_login(selenium, device_user, device_password):
         '.querySelector("mwc-button")'
     ).click()
 
+    time.sleep(10)
     elem = selenium.find_by(By.CSS_SELECTOR, "gramps-js").shadow_root
     elem = selenium.find_by(By.CSS_SELECTOR, "grampsjs-main-menu", elem).shadow_root
-    elem = selenium.find_by(By.CSS_SELECTOR, "mwc-list grampsjs-list-item", elem)
+    elem = selenium.find_by(By.CSS_SELECTOR, "mwc-list grampsjs-list-item span", elem)
     assert elem.text == "Home Page"
 
     # home = selenium.driver.execute_script(
