@@ -42,7 +42,7 @@ def test_login(selenium, device_user, device_password):
         '.querySelector("mwc-button")'
     ).click()
 
-    time.sleep(10)
+    time.sleep(20)
     elem = selenium.find_by(By.CSS_SELECTOR, "gramps-js").shadow_root
     elem = selenium.find_by(By.CSS_SELECTOR, "grampsjs-main-menu", elem).shadow_root
     elem = selenium.find_by(By.CSS_SELECTOR, "mwc-list grampsjs-list-item span", elem)
