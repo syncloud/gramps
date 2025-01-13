@@ -2,6 +2,8 @@ import time
 
 import pytest
 from os.path import dirname, join
+
+from retry import retry
 from selenium.webdriver.common.by import By
 from subprocess import check_output
 from syncloudlib.integration.hosts import add_host_alias
@@ -42,17 +44,53 @@ def test_login(selenium, device_user, device_password):
         '.querySelector("mwc-button")'
     ).click()
 
-    time.sleep(20)
-    elem = selenium.find_by(By.CSS_SELECTOR, "gramps-js").shadow_root
-    elem = selenium.find_by(By.CSS_SELECTOR, "grampsjs-main-menu", elem).shadow_root
-    elem = selenium.find_by(By.CSS_SELECTOR, "mwc-list grampsjs-list-item span", elem)
-    assert elem.text == "Home Page"
-
-    # home = selenium.driver.execute_script(
-    #     'return     document'
-    #     '.querySelector("gramps-js").shadowRoot'
-    #     '.querySelector("grampsjs-main-menu").shadowRoot'
-    #     '.querySelector("mwc-list grampsjs-list-item span")'
-    # )
-
+    @retry(exceptions=Exception, tries=10, delay=1, backoff=2)
+    def get_home():
+        return selenium.driver.execute_script(
+            'return     document'
+            '.querySelector("gramps-js").shadowRoot'
+            '.querySelector("grampsjs-main-menu").shadowRoot'
+            '.querySelector("mwc-list grampsjs-list-item span")'
+        )
+    home = get_home()
+    assert home.text == "Home Page"
     selenium.screenshot('main')
+
+
+def test_add_person(selenium):
+    selenium.driver.execute_script(
+        'return document'
+        '.querySelector("gramps-js").shadowRoot'
+        '.querySelector("grampsjs-app-bar").shadowRoot'
+        '.querySelector("grampsjs-add-menu").shadowRoot'
+        '.querySelector("mwc-icon-button").shadowRoot'
+        '.querySelector("button")'
+    ).click()
+    selenium.screenshot('add-person-1')
+
+    @retry(exceptions=Exception, tries=10, delay=1, backoff=2)
+    def get_button():
+        return selenium.driver.execute_script(
+            'return document'
+            '.querySelector("gramps-js").shadowRoot'
+            '.querySelector("grampsjs-app-bar").shadowRoot'
+            '.querySelector("grampsjs-add-menu").shadowRoot'
+            '.querySelector("mwc-menu grampsjs-list-item[href=\'/new_person\'] span")'
+        )
+    btn = get_button()
+    btn.click()
+
+    @retry(exceptions=Exception, tries=10, delay=1, backoff=2)
+    def get_header():
+        return selenium.driver.execute_script(
+            'return     document'
+            '.querySelector("gramps-js").shadowRoot'
+            '.querySelector("grampsjs-pages").shadowRoot'
+            '.querySelector("grampsjs-view-new-person").shadowRoot'
+            '.querySelector("h2")'
+        )
+    header = get_header()
+    assert header.text == "New Person"
+
+    selenium.screenshot('add-person-2')
+
