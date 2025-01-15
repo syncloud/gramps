@@ -6,6 +6,8 @@ if [[ -f /var/snap/platform/current/CI_TEST ]]; then
   export REQUESTS_CA_BUNDLE=/var/snap/platform/current/syncloud.ca.crt
 fi
 export GRAMPS_API_CONFIG=/var/snap/gramps/current/config/gramps.cfg
+export FONTCONFIG_PATH=${DIR}/gramps/etc/fonts
+
 exec $DIR/gramps/sbin/python \
   ${DIR}/gramps/usr/local/bin/gunicorn \
   -w 8 \
