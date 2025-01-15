@@ -19,7 +19,7 @@ rm -rf tmp
 
 sed -i 's#sys\.executable#"/snap/gramps/current/gramps/sbin/python"#g' /app/src/gramps_webapi/__main__.py
 sed -i 's#if get_all_user_details(#if True or get_all_user_details(#g' /usr/local/lib/python3.11/dist-packages/gramps_webapi/api/resources/token.py
-sed -i 's#dbid = "bsddb"#dbid = "sqlite"#g' /usr/local/lib/python3.11/dist-packages/gramps/gen/db/utils.py
+#sed -i 's#dbid = "bsddb"#dbid = "sqlite"#g' /usr/local/lib/python3.11/dist-packages/gramps/gen/db/utils.py
 
 cp -r /bin ${BUILD_DIR}
 cp -r /usr ${BUILD_DIR}
