@@ -39,6 +39,8 @@ def module_setup(request, device, app_dir, artifact_dir):
         device.run_ssh('ls -la /data/gramps > {0}/data.ls.log'.format(TMP_DIR), throw=False)
         device.run_ssh('cat /etc/hosts > {0}/hosts.log'.format(TMP_DIR), throw=False)
         device.run_ssh('cat /var/snap/platform/current/config/authelia/config.yml > {0}/authelia.config.log'.format(TMP_DIR), throw=False)
+        device.run_ssh('ls -la /var/snap/gramps/current/grampsdb > {0}/grampsdb.log'.format(TMP_DIR),
+                       throw=False)
 
         app_log_dir = join(artifact_dir, 'log')
         os.mkdir(app_log_dir)

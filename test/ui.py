@@ -4,7 +4,6 @@ from subprocess import check_output
 
 import pytest
 import requests
-from retry import retry
 from selenium.webdriver.common.by import By
 from syncloudlib.http import wait_for_rest
 from syncloudlib.integration.hosts import add_host_alias
@@ -20,8 +19,7 @@ def module_setup(request, device, artifact_dir, ui_mode, driver, selenium):
         device.activated()
         device.run_ssh('mkdir -p {0}'.format(TMP_DIR), throw=False)
         device.run_ssh('journalctl > {0}/journalctl.ui.log'.format(TMP_DIR, ui_mode), throw=False)
-        device.run_ssh('ls -la /var/snap/gramps/current/grampsdb > {0}/grampsdb.log'.format(TMP_DIR, ui_mode),
-                       throw=False)
+        device.run_ssh('ls -la /var/snap/gramps/current/grampsdb > {0}/grampsdb.ui.log'.format(TMP_DIR), throw=False)
         device.run_ssh(
             'cat /var/snap/platform/current/config/authelia/config.yml > {0}/authelia.config.ui.log'.format(TMP_DIR),
             throw=False)
@@ -45,16 +43,14 @@ def test_login(selenium, device_user, device_password):
     password.send_keys(device_password)
     selenium.screenshot('login')
 
-    element(
-        selenium,
+    selenium.element_by_js(
         'document'
         '.querySelector("gramps-js").shadowRoot'
         '.querySelector("grampsjs-login").shadowRoot'
         '.querySelector("mwc-button")'
     ).click()
 
-    home = element(
-        selenium,
+    home = selenium.element_by_js(
         'document'
         '.querySelector("gramps-js").shadowRoot'
         '.querySelector("grampsjs-main-menu").shadowRoot'
@@ -65,8 +61,7 @@ def test_login(selenium, device_user, device_password):
 
 
 def test_add_person(selenium):
-    element(
-        selenium,
+    selenium.element_by_js(
         'document'
         '.querySelector("gramps-js").shadowRoot'
         '.querySelector("grampsjs-app-bar").shadowRoot'
@@ -76,8 +71,7 @@ def test_add_person(selenium):
     ).click()
     selenium.screenshot('add-person-empty')
 
-    element(
-        selenium,
+    selenium.element_by_js(
         'document'
         '.querySelector("gramps-js").shadowRoot'
         '.querySelector("grampsjs-app-bar").shadowRoot'
@@ -85,8 +79,7 @@ def test_add_person(selenium):
         '.querySelector("mwc-menu grampsjs-list-item[href=\'/new_person\'] span")'
     ).click()
 
-    header = element(
-        selenium,
+    header = selenium.element_by_js(
         'document'
         '.querySelector("gramps-js").shadowRoot'
         '.querySelector("grampsjs-pages").shadowRoot'
@@ -95,8 +88,7 @@ def test_add_person(selenium):
     )
     assert header.text == "New Person"
 
-    element(
-        selenium,
+    selenium.element_by_js(
         'document'
         '.querySelector("body > gramps-js").shadowRoot'
         '.querySelector("grampsjs-pages").shadowRoot'
@@ -107,8 +99,7 @@ def test_add_person(selenium):
         '.querySelector("label > input")'
     ).send_keys("First Name 1")
 
-    element(
-        selenium,
+    selenium.element_by_js(
         'document'
         '.querySelector("body > gramps-js").shadowRoot'
         '.querySelector("grampsjs-pages").shadowRoot'
@@ -121,8 +112,7 @@ def test_add_person(selenium):
     ).send_keys("Last Name 1")
     selenium.screenshot('add-person-before-save')
 
-    save = element(
-        selenium,
+    save = selenium.element_by_js(
         'document'
         '.querySelector("body > gramps-js").shadowRoot'
         '.querySelector("grampsjs-pages").shadowRoot'
@@ -132,8 +122,7 @@ def test_add_person(selenium):
     )
     save.click()
 
-    name = element(
-        selenium,
+    name = selenium.element_by_js(
         'document'
         '.querySelector("body > gramps-js").shadowRoot'
         '.querySelector("grampsjs-pages").shadowRoot'
@@ -158,8 +147,7 @@ def test_backup(selenium, device, artifact_dir, device_host, device_password, ap
     wait_for_rest(requests.session(), "https://{0}".format(app_domain), 200, 10)
     device.run_ssh("snap run platform.cli backup restore {0}".format(backup['file']))
     selenium.open_app()
-    name = element(
-        selenium,
+    name = selenium.element_by_js(
         'document'
         '.querySelector("body > gramps-js").shadowRoot'
         '.querySelector("grampsjs-pages").shadowRoot'
@@ -170,13 +158,3 @@ def test_backup(selenium, device, artifact_dir, device_host, device_password, ap
     assert name.text == "1"
 
     selenium.screenshot('backup-restored')
-
-@retry(exceptions=Exception, tries=10, delay=1, backoff=2)
-def element(selenium, js):
-    try:
-        elem = selenium.driver.execute_script('return ' + js)
-        selenium.driver.execute_script("arguments[0].scrollIntoView();", elem)
-        return elem
-    except Exception:
-        selenium.screenshot('exception')
-        raise

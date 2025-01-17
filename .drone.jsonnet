@@ -128,9 +128,10 @@ local build(arch, test_ui, dind) = [{
            name: 'test-ui',
            image: 'python:' + python,
            commands: [
+             'APP_ARCHIVE_PATH=$(realpath $(cat package.name))',
              'cd test',
              './deps.sh',
-             'py.test -v -x -s ui.py --distro=buster --ui-mode=desktop --domain=buster.com --device-host=' + name + '.buster.com --app=' + name + ' --browser-height=2000 --browser=' + browser,
+             'py.test -v -x -s ui.py --distro=buster --ui-mode=desktop --domain=buster.com --app-archive-path=$APP_ARCHIVE_PATH --device-host=' + name + '.buster.com --app=' + name + ' --browser-height=2000 --browser=' + browser,
            ],
            volumes: [{
              name: 'videos',
