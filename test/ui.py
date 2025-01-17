@@ -146,6 +146,7 @@ def test_backup(selenium, device, artifact_dir, device_host, device_password, ap
     local_install(device_host, device_password, app_archive_path)
     wait_for_rest(requests.session(), "https://{0}".format(app_domain), 200, 10)
     device.run_ssh("snap run platform.cli backup restore {0}".format(backup['file']))
+    wait_for_rest(requests.session(), "https://{0}".format(app_domain), 200, 10)
     selenium.open_app()
     name = selenium.element_by_js(
         'document'

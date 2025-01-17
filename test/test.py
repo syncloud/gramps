@@ -1,7 +1,6 @@
 import os
 from os.path import join
 from subprocess import check_output
-import json
 
 import pytest
 import requests
@@ -9,7 +8,6 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from syncloudlib.http import wait_for_rest
 from syncloudlib.integration.hosts import add_host_alias
 from syncloudlib.integration.installer import local_install
-import time
 
 TMP_DIR = '/tmp/syncloud'
 
