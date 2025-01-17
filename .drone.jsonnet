@@ -82,7 +82,7 @@ local build(arch, test_ui, dind) = [{
         'APP_ARCHIVE_PATH=$(realpath $(cat package.name))',
         'cd test',
         './deps.sh',
-        'py.test -x -s test.py --distro=buster --domain=buster.com --app-archive-path=$APP_ARCHIVE_PATH --device-host=' + name + '.buster.com --app=' + name + ' --arch=' + arch,
+        'py.test -v -x -s test.py --distro=buster --domain=buster.com --app-archive-path=$APP_ARCHIVE_PATH --device-host=' + name + '.buster.com --app=' + name + ' --arch=' + arch,
       ],
     },
   ] + (if test_ui then [
@@ -130,7 +130,7 @@ local build(arch, test_ui, dind) = [{
            commands: [
              'cd test',
              './deps.sh',
-             'py.test -x -s ui.py --distro=buster --ui-mode=desktop --domain=buster.com --device-host=' + name + '.buster.com --app=' + name + ' --browser-height=2000 --browser=' + browser,
+             'py.test -v -x -s ui.py --distro=buster --ui-mode=desktop --domain=buster.com --device-host=' + name + '.buster.com --app=' + name + ' --browser-height=2000 --browser=' + browser,
            ],
            volumes: [{
              name: 'videos',
@@ -146,7 +146,7 @@ local build(arch, test_ui, dind) = [{
         'APP_ARCHIVE_PATH=$(realpath $(cat package.name))',
         'cd test',
         './deps.sh',
-        'py.test -x -s upgrade.py --distro=buster --ui-mode=desktop --domain=buster.com --app-archive-path=$APP_ARCHIVE_PATH --device-host=' + name + '.buster.com --app=' + name + ' --browser=' + browser,
+        'py.test -v -x -s upgrade.py --distro=buster --ui-mode=desktop --domain=buster.com --app-archive-path=$APP_ARCHIVE_PATH --device-host=' + name + '.buster.com --app=' + name + ' --browser=' + browser,
       ],
     },
     {
