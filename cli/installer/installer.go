@@ -8,7 +8,6 @@ import (
 	"github.com/syncloud/golib/linux"
 	"github.com/syncloud/golib/platform"
 	"go.uber.org/zap"
-
 	"os"
 	"path"
 )
@@ -272,6 +271,10 @@ func (i *Installer) BackupPreStop() error {
 }
 
 func (i *Installer) RestorePreStart() error {
+	//err := os.RemoveAll(path.Join(DataDir, "gramps/grampsdb"))
+	//if err != nil {
+	//	return err
+	//}
 	return i.PostRefresh()
 }
 

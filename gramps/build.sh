@@ -23,6 +23,8 @@ sed -i 's#if get_all_user_details(#if True or get_all_user_details(#g' /usr/loca
 #sed -i 's#dbid_path = os.path.join(dirpath, DBBACKEND)#dbid_path = os.path.join(dirpath, DBBACKEND); print(dbid_path)#g' /usr/local/lib/python3.11/dist-packages/gramps/gen/db/utils.py
 sed -i 's#<dir>/usr/share/fonts</dir>#<dir>/snap/gramps/current/gramps/usr/share/fonts</dir>#g' /etc/fonts/fonts.conf
 
+rm -rf /usr/lib/*-linux-gnu*/dri
+
 cp -r /bin ${BUILD_DIR}
 cp -r /usr ${BUILD_DIR}
 cp -r /lib ${BUILD_DIR}
