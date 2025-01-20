@@ -145,6 +145,17 @@ def test_backup(selenium, device, artifact_dir, device_host, device_password, ap
     device.run_ssh("snap remove gramps")
     local_install(device_host, device_password, app_archive_path)
     wait_for_rest(requests.session(), "https://{0}".format(app_domain), 200, 10)
+    selenium.open_app()
+    name = selenium.element_by_js(
+        'document'
+        '.querySelector("body > gramps-js").shadowRoot'
+        '.querySelector("grampsjs-pages").shadowRoot'
+        '.querySelector("grampsjs-view-dashboard").shadowRoot'
+        '.querySelector("#statistics").shadowRoot'
+        '.querySelector("table > tr:nth-child(1) > td")'
+    )
+    assert name.text == "0"
+
     device.run_ssh("snap run platform.cli backup restore {0}".format(backup['file']))
     wait_for_rest(requests.session(), "https://{0}".format(app_domain), 200, 10)
     selenium.open_app()
