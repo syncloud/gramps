@@ -271,10 +271,10 @@ func (i *Installer) BackupPreStop() error {
 }
 
 func (i *Installer) RestorePreStart() error {
-	//err := os.RemoveAll(path.Join(DataDir, "gramps/grampsdb"))
-	//if err != nil {
-	//	return err
-	//}
+	err := os.RemoveAll(path.Join(DataDir, "gramps/grampsdb"))
+	if err != nil {
+		return err
+	}
 	return i.PostRefresh()
 }
 
