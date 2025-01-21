@@ -19,7 +19,7 @@ def module_setup(request, device, artifact_dir, ui_mode, driver, selenium):
         device.activated()
         device.run_ssh('mkdir -p {0}'.format(TMP_DIR), throw=False)
         device.run_ssh('journalctl > {0}/journalctl.ui.log'.format(TMP_DIR, ui_mode), throw=False)
-        device.run_ssh('ls -la /var/snap/gramps/current/grampsdb > {0}/grampsdb.ui.log'.format(TMP_DIR), throw=False)
+        device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb > {0}/grampsdb.ui.log'.format(TMP_DIR), throw=False)
         device.run_ssh(
             'cat /var/snap/platform/current/config/authelia/config.yml > {0}/authelia.config.ui.log'.format(TMP_DIR),
             throw=False)
@@ -131,9 +131,13 @@ def test_backup(selenium, device, artifact_dir, device_host, device_user, device
     login(device_password, device_user, selenium)
     assert stats(selenium).text == "0"
 
+    device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb'), throw=False)
+        
     device.run_ssh("snap run platform.cli backup restore {0}".format(backup['file']))
     wait_for_rest(requests.session(), "https://{0}".format(app_domain), 200, 10)
 
+    device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb', throw=False)
+        
     selenium.open_app()
     login(device_password, device_user, selenium)
     assert stats(selenium).text == "1"
