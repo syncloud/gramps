@@ -119,8 +119,8 @@ def test_add_person(selenium):
 
 def test_backup(selenium, device, artifact_dir, device_host, device_user, device_password, app_archive_path, app_domain):
 
-    device.run_ssh("cat /var/snap/gramps/current/gramps/recent-files-gramps.xml', throw=False)
-    device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb', throw=False)
+    device.run_ssh("cat /var/snap/gramps/current/gramps/recent-files-gramps.xml", throw=False)
+    device.run_ssh("ls -la /var/snap/gramps/current/gramps/grampsdb", throw=False)
         
     device.run_ssh("snap run platform.cli backup create gramps")
     response = device.run_ssh("snap run platform.cli backup list")
@@ -138,7 +138,7 @@ def test_backup(selenium, device, artifact_dir, device_host, device_user, device
     device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb', throw=False)
         
     device.run_ssh("snap run platform.cli backup restore {0}".format(backup['file']))
-    device.run_ssh("cat /var/snap/gramps/current/gramps/recent-files-gramps.xml', throw=False)
+    device.run_ssh("cat /var/snap/gramps/current/gramps/recent-files-gramps.xml", throw=False)
     device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb', throw=False)
     
     wait_for_rest(requests.session(), "https://{0}".format(app_domain), 200, 10)
