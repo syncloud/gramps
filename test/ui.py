@@ -134,6 +134,8 @@ def test_backup(selenium, device, artifact_dir, device_host, device_user, device
     device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb', throw=False)
         
     device.run_ssh("snap run platform.cli backup restore {0}".format(backup['file']))
+    device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb', throw=False)
+    
     wait_for_rest(requests.session(), "https://{0}".format(app_domain), 200, 10)
 
     device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb', throw=False)
