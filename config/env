@@ -1,3 +1,4 @@
+export HOME={{ .DataDir }}
 export GRAMPSHOME={{ .DataDir }}
 export GRAMPS_API_CONFIG={{ .DataDir }}/config/gramps.cfg
 export FONTCONFIG_PATH={{ .AppDir }}/gramps/etc/fonts
