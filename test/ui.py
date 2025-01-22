@@ -120,7 +120,7 @@ def test_add_person(selenium):
 def test_backup(selenium, device, artifact_dir, device_host, device_user, device_password, app_archive_path, app_domain):
 
     device.run_ssh("cat /var/snap/gramps/current/gramps/recent-files-gramps.xml", throw=False)
-    databases = device.run_ssh("ls -la /var/snap/gramps/current/gramps/grampsdb", throw=False).splitlines()
+    databases = device.run_ssh("ls -1 /var/snap/gramps/current/gramps/grampsdb", throw=False).splitlines()
     assert len(databases) == 1
 
     device.run_ssh("snap run platform.cli backup create gramps")
@@ -136,17 +136,17 @@ def test_backup(selenium, device, artifact_dir, device_host, device_user, device
     login(device_password, device_user, selenium)
     assert stats(selenium).text == "0"
 
-    databases = device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb', throw=False).splitlines()
+    databases = device.run_ssh('ls -1 /var/snap/gramps/current/gramps/grampsdb', throw=False).splitlines()
     assert len(databases) == 1
     
     device.run_ssh("snap run platform.cli backup restore {0}".format(backup['file']))
     device.run_ssh("cat /var/snap/gramps/current/gramps/recent-files-gramps.xml", throw=False)
-    databases = device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb', throw=False).splitlines()
+    databases = device.run_ssh('ls -1 /var/snap/gramps/current/gramps/grampsdb', throw=False).splitlines()
     assert len(databases) == 1
 
     wait_for_rest(requests.session(), "https://{0}".format(app_domain), 200, 10)
 
-    databases = device.run_ssh('ls -la /var/snap/gramps/current/gramps/grampsdb', throw=False).splitlines()
+    databases = device.run_ssh('ls -1 /var/snap/gramps/current/gramps/grampsdb', throw=False).splitlines()
     assert len(databases) == 1
 
     selenium.open_app()
@@ -186,4 +186,3 @@ def stats(selenium):
         '.querySelector("table > tr:nth-child(1) > td")'
     )
     return name
-
