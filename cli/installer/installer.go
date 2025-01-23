@@ -267,19 +267,31 @@ func (i *Installer) FixPermissions() error {
 }
 
 func (i *Installer) BackupPreStop() error {
-	return i.PreRefresh()
+	err := i.logDb("BackupPreStop.start")
+	if err != nil {
+		return err
+	}
+	err = i.PreRefresh()
+	if err != nil {
+		return err
+	}
+	return i.logDb("BackupPreStop.end")
 }
 
 func (i *Installer) RestorePreStart() error {
-	//err := os.RemoveAll(path.Join(DataDir, "gramps/grampsdb"))
-	//if err != nil {
-	//return err
-	//}
-	return i.PostRefresh()
+	err := i.logDb("RestorePreStart.start")
+	if err != nil {
+		return err
+	}
+	err = i.PostRefresh()
+	if err != nil {
+		return err
+	}
+	return i.logDb("RestorePreStart.end")
 }
 
 func (i *Installer) RestorePostStart() error {
-	err := i.executor.Run("bash -c 'ls -1 /var/snap/gramps/current/gramps/grampsdb | logger -t gramps.restorepoststart.start'")
+	err := i.logDb("RestorePostStart.start")
 	if err != nil {
 		return err
 	}
@@ -287,8 +299,16 @@ func (i *Installer) RestorePostStart() error {
 	if err != nil {
 		return err
 	}
-	return i.executor.Run("bash -c 'ls -1 /var/snap/gramps/current/gramps/grampsdb | logger -t gramps.restorepoststart.end'")
+	return i.logDb("RestorePostStart.end")
 
+}
+
+func (i *Installer) logDb(name string) error {
+	return i.executor.Run(
+		"bash",
+		"-c",
+		fmt.Sprint("ls -1 /var/snap/gramps/current/gramps/grampsdb | logger -t gramps.", name),
+	)
 }
 
 func getOrCreateUuid(file string) (string, error) {
