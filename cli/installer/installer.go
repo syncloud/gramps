@@ -273,13 +273,22 @@ func (i *Installer) BackupPreStop() error {
 func (i *Installer) RestorePreStart() error {
 	//err := os.RemoveAll(path.Join(DataDir, "gramps/grampsdb"))
 	//if err != nil {
-		//return err
+	//return err
 	//}
 	return i.PostRefresh()
 }
 
 func (i *Installer) RestorePostStart() error {
-	return i.Configure()
+	err := i.executor.Run("bash -c 'ls -1 /var/snap/gramps/current/gramps/grampsdb | logger -t gramps.restorepoststart.start'")
+	if err != nil {
+		return err
+	}
+	err = i.Configure()
+	if err != nil {
+		return err
+	}
+	return i.executor.Run("bash -c 'ls -1 /var/snap/gramps/current/gramps/grampsdb | logger -t gramps.restorepoststart.end'")
+
 }
 
 func getOrCreateUuid(file string) (string, error) {
