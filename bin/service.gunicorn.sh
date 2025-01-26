@@ -6,7 +6,6 @@ if [[ -f /var/snap/platform/current/CI_TEST ]]; then
   export REQUESTS_CA_BUNDLE=/var/snap/platform/current/syncloud.ca.crt
 fi
 . "${SNAP_DATA}/config/env"
-ls -1 /var/snap/gramps/current/gramps/grampsdb
 exec $DIR/gramps/sbin/python \
   ${DIR}/gramps/usr/local/bin/gunicorn \
   -w 8 \

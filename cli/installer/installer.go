@@ -8,6 +8,7 @@ import (
 	"github.com/syncloud/golib/linux"
 	"github.com/syncloud/golib/platform"
 	"go.uber.org/zap"
+
 	"os"
 	"path"
 )
@@ -267,52 +268,15 @@ func (i *Installer) FixPermissions() error {
 }
 
 func (i *Installer) BackupPreStop() error {
-	err := i.logDb("BackupPreStop.start")
-	if err != nil {
-		return err
-	}
-	err = i.PreRefresh()
-	if err != nil {
-		return err
-	}
-	return i.logDb("BackupPreStop.end")
+	return i.PreRefresh()
 }
 
 func (i *Installer) RestorePreStart() error {
-	err := i.logDb("RestorePreStart.start")
-	if err != nil {
-		return err
-	}
-	err = i.PostRefresh()
-	if err != nil {
-		return err
-	}
-	return i.logDb("RestorePreStart.end")
-}
-
-func (i *Installer) RestorePostStop() error {
-	return i.logDb("RestorePostStop")
+	return i.PostRefresh()
 }
 
 func (i *Installer) RestorePostStart() error {
-	err := i.logDb("RestorePostStart.start")
-	if err != nil {
-		return err
-	}
-	err = i.Configure()
-	if err != nil {
-		return err
-	}
-	return i.logDb("RestorePostStart.end")
-
-}
-
-func (i *Installer) logDb(name string) error {
-	return i.executor.Run(
-		"bash",
-		"-c",
-		fmt.Sprint("ls -1 /var/snap/gramps/current/gramps/grampsdb | logger -t gramps.", name),
-	)
+	return i.Configure()
 }
 
 func getOrCreateUuid(file string) (string, error) {

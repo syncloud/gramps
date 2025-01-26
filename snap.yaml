@@ -37,9 +37,6 @@ apps:
   restore-post-start:
     command: bin/cli restore-post-start
 
-  restore-post-stop:
-    command: bin/cli restore-post-stop
-
 confinement: strict
 description: Gramps
 grade: stable
