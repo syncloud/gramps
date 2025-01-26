@@ -290,6 +290,10 @@ func (i *Installer) RestorePreStart() error {
 	return i.logDb("RestorePreStart.end")
 }
 
+func (i *Installer) RestorePostStop() error {
+	return i.logDb("RestorePostStop")
+}
+
 func (i *Installer) RestorePostStart() error {
 	err := i.logDb("RestorePostStart.start")
 	if err != nil {

@@ -56,6 +56,14 @@ func main() {
 		},
 	})
 
+	cmd.AddCommand(&cobra.Command{
+		Use: "restore-post-stop",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			logger.Info("restore-post-stop")
+			return installer.New(logger).RestorePostStop()
+		},
+	})
+
 	err := cmd.Execute()
 	if err != nil {
 		fmt.Print(err)
