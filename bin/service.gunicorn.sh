@@ -8,7 +8,7 @@ fi
 . "${SNAP_DATA}/config/env"
 exec $DIR/gramps/sbin/python \
   ${DIR}/gramps/usr/local/bin/gunicorn \
-  -w 8 \
+  -w 4 \
   -b unix:/var/snap/gramps/common/web.socket \
   gramps_webapi.wsgi:app \
   --timeout 120 \
