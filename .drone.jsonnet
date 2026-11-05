@@ -20,13 +20,6 @@ local build(arch, test_ui, dind) = [{
   },
   steps: [
     {
-      name: 'version',
-      image: 'debian:buster-slim',
-      commands: [
-        'echo $DRONE_BUILD_NUMBER > version',
-      ],
-    },
-    {
       name: 'redis',
       image: 'redis:' + redis,
       commands: [
@@ -69,10 +62,9 @@ local build(arch, test_ui, dind) = [{
     },
     {
       name: 'package',
-      image: 'debian:buster-slim',
+      image: 'debian:bookworm-slim',
       commands: [
-        'VERSION=$(cat version)',
-        './package.sh ' + name + ' $VERSION ',
+        './package.sh ' + name + ' $DRONE_BUILD_NUMBER',
       ],
     },
     {
