@@ -4,5 +4,6 @@ LIBS=$(echo ${DIR}/lib/*-linux-gnu*)
 LIBS=$LIBS:$(echo ${DIR}/usr/lib/*-linux-gnu*)
 LIBS=$LIBS:$(echo ${DIR}/usr/lib)
 LIBS=$LIBS:$(echo ${DIR}/usr/local/lib)
-exec ${DIR}/lib/*-linux*/ld-*.so* --library-path $LIBS ${DIR}/usr/bin/gpg "$@"
+LOADER=$(ls ${DIR}/lib/*-linux-gnu*/ld-linux*.so* ${DIR}/lib/ld-linux*.so* 2>/dev/null | head -1)
+exec "${LOADER}" --library-path $LIBS ${DIR}/usr/bin/gpg "$@"
 

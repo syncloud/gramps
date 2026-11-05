@@ -171,6 +171,8 @@ func (i *Installer) StorageChange() error {
 		path.Join("/data", App, "cache/thumbnail"),
 		path.Join("/data", App, "cache/report"),
 		path.Join("/data", App, "cache/export"),
+		path.Join("/data", App, "cache/request"),
+		path.Join("/data", App, "cache/persistent"),
 	)
 	if err != nil {
 		return err
