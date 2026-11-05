@@ -1,44 +1,40 @@
+name: gramps
+summary: Gramps
+description: Research, organize and share your family tree
+grade: stable
+
 apps:
+  redis:
+    user: gramps
+    command: bin/service.redis.sh
+    daemon: simple
+    restart-condition: always
+    start-timeout: 600s
+    restart-delay: 10s
+    before: [celery]
   gunicorn:
     user: gramps
     command: bin/service.gunicorn.sh
     daemon: simple
-    plugs:
-    - network
-    - network-bind
     restart-condition: always
+    start-timeout: 600s
+    restart-delay: 10s
   celery:
     user: gramps
     command: bin/service.celery.sh
     daemon: simple
-    plugs:
-    - network
-    - network-bind
     restart-condition: always
-  redis:
-    user: gramps
-    daemon: simple
-    command: bin/service.redis.sh
-    restart-condition: always
-    before: [celery]
- 
+    start-timeout: 600s
+    restart-delay: 10s
+  cli:
+    command: bin/cli
   storage-change:
     command: bin/cli storage-change
-
   access-change:
     command: bin/cli access-change
-
   backup-pre-stop:
     command: bin/cli backup-pre-stop
-
   restore-pre-start:
     command: bin/cli restore-pre-start
-
   restore-post-start:
     command: bin/cli restore-post-start
-
-confinement: strict
-description: Research, organize and share your family tree
-grade: stable
-name: gramps
-summary: Gramps
